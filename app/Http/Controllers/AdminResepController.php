@@ -2,12 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use Stevebauman\Purify\Facades\Purify;
 use App\Models\Resep;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class AdminResepController extends Controller
 {
+
+    /**
+     * Membersihkan HTML dari editor deskripsi.
+     */
+    private function bersihkanDeskripsi(?string $html): ?string
+    {
+        if ($html === null || trim(strip_tags($html)) === '') {
+            return null;
+        }
+
+        return Purify::clean($html);
+    }
+
+
     /**
      * Menampilkan daftar resep.
      */
@@ -43,13 +58,18 @@ class AdminResepController extends Controller
                     'string',
                     'min:3',
                     'max:100',
-'regex:/^[\p{L}\p{N}\s.,!?:;\'"()\-+&\/%@#*_]+$/u',                ],
+                    'regex:/^[\p{L}\p{N}\s.,!?:;\'"()\-+&\/%@#*_]+$/u',
+                ],
 
                 'deskripsi' => [
                     'nullable',
                     'string',
-                    'max:5000',
-'regex:/^[\p{L}\p{N}\s.,!?:;\'"()\-+&\/%@#*_]+$/u',                ],
+                    function ($attribute, $value, $fail) {
+                        if (mb_strlen(strip_tags((string) $value)) > 5000) {
+                            $fail('Deskripsi maksimal 5.000 karakter.');
+                        }
+                    },
+                ],
 
                 'foto' => [
                     'nullable',
@@ -74,7 +94,7 @@ class AdminResepController extends Controller
                     'nullable',
                     'integer',
                     'min:1',
-                    'max:1440',
+                    'max:600',
                 ],
             ],
             [
@@ -92,9 +112,6 @@ class AdminResepController extends Controller
 
                 'deskripsi.string' =>
                 'Deskripsi harus berupa teks.',
-
-                'deskripsi.regex' =>
-                'Deskripsi hanya boleh berisi huruf, angka, spasi, dan tanda baca umum (tidak boleh mengandung <, >, |, \, ^, ~, `, $, atau =).',
 
                 'deskripsi.max' =>
                 'Deskripsi maksimal 5.000 karakter.',
@@ -127,9 +144,11 @@ class AdminResepController extends Controller
                 'Waktu memasak minimal 1 menit.',
 
                 'waktu_memasak.max' =>
-                'Waktu memasak maksimal 1.440 menit.',
+                'Waktu memasak maksimal 600 menit.',
             ]
         );
+
+        $data['deskripsi'] = $this->bersihkanDeskripsi($data['deskripsi'] ?? null);
 
         try {
             // Simpan foto jika ada.
@@ -192,13 +211,18 @@ class AdminResepController extends Controller
                     'string',
                     'min:3',
                     'max:100',
+                    'regex:/^[\p{L}\p{N}\s.,!?:;\'"()\-+&\/%@#*_]+$/u',
+
                 ],
 
                 'deskripsi' => [
                     'nullable',
                     'string',
-                    'max:5000',
-                    'regex:/^[\p{L}\p{N}\s.,!?:;\'"()\-+&\/%@#*_]+$/u',
+                    function ($attribute, $value, $fail) {
+                        if (mb_strlen(strip_tags((string) $value)) > 5000) {
+                            $fail('Deskripsi maksimal 5.000 karakter.');
+                        }
+                    },
                 ],
 
                 'foto' => [
@@ -224,7 +248,7 @@ class AdminResepController extends Controller
                     'nullable',
                     'integer',
                     'min:1',
-                    'max:1440',
+                    'max:600',
                 ],
             ],
             [
@@ -245,9 +269,6 @@ class AdminResepController extends Controller
 
                 'deskripsi.max' =>
                 'Deskripsi maksimal 5.000 karakter.',
-
-                'deskripsi.regex' =>
-                'Deskripsi hanya boleh berisi huruf, angka, spasi, dan tanda baca umum (tidak boleh mengandung <, >, |, \, ^, ~, `, $, atau =).',
 
                 'foto.image' =>
                 'File yang dipilih harus berupa gambar.',
@@ -277,9 +298,11 @@ class AdminResepController extends Controller
                 'Waktu memasak minimal 1 menit.',
 
                 'waktu_memasak.max' =>
-                'Waktu memasak maksimal 1.440 menit.',
+                'Waktu memasak maksimal 600 menit.',
             ]
         );
+
+        $data['deskripsi'] = $this->bersihkanDeskripsi($data['deskripsi'] ?? null);
 
         try {
             // Simpan foto lama.

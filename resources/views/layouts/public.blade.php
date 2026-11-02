@@ -13,8 +13,7 @@
 
 
     <style>
-
-        :root{
+        :root {
             --text-light: #FFF5F1;
             --text-dark: #3A001E;
             --main-color: #E01F20;
@@ -278,6 +277,33 @@
                 font-size: 36px;
             }
 
+        }
+
+
+        /*=========================================
+                          Resep
+        ========================================= */
+
+        .resep-deskripsi {
+            text-align: left;
+            max-width: 700px;
+            margin: 0 auto 24px;
+            line-height: 1.7;
+        }
+
+        .resep-deskripsi p {
+            margin: 0 0 12px;
+        }
+
+        .resep-deskripsi ul,
+        .resep-deskripsi ol {
+            padding-left: 24px;
+            margin: 0 0 12px;
+        }
+
+        .resep-deskripsi a {
+            color: #206bc4;
+            text-decoration: underline;
         }
     </style>
 

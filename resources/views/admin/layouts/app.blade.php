@@ -261,6 +261,9 @@
             }
         }
     </style>
+
+    @stack('styles')
+
 </head>
 
 <body>
@@ -401,6 +404,9 @@
     </div>
 
     <script src="{{ asset('assets/tabler/js/tabler.min.js') }}"></script>
+
+    @stack('scripts')
+
 </body>
 
 </html>

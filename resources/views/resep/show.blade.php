@@ -17,11 +17,10 @@
                 <h1>
                     {{ $resep->judul }}
                 </h1>
-
                 @if ($resep->deskripsi)
-                    <p>
-                        {{ $resep->deskripsi }}
-                    </p>
+                    <div class="resep-deskripsi">
+                        {!! $resep->deskripsi !!}
+                    </div>
                 @endif
 
             </div>
